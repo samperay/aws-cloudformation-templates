@@ -1,0 +1,20 @@
+Resources:
+  SimpleEC2WebServerInstall:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: rundeck
+      DisableApiTermination: false
+      ImageId: ami-0470e33cd681b2476
+      InstanceType: t2.micro
+      Monitoring: false
+      SecurityGroupIds:
+        - sg-group
+      UserData: !Base64 |
+        #!/bin/bash -ex
+        yum install httpd -y
+        service httpd start 
+        chkconfig httpd on
+        echo "Hello world" > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: SimpleEC2WebServer
