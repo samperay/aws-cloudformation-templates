@@ -1,0 +1,47 @@
+Resources:
+  EC2WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: rundeck
+      DisableApiTermination: false
+      ImageId: ami-0470e33cd681b2476
+      InstanceType: t2.micro
+      Monitoring: false
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroupWebServer
+
+      UserData: !Base64 |
+        #!/bin/bash -ex
+        yum install httpd -y
+        service httpd start 
+        chkconfig httpd on
+        echo "Hello world" > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: SimpleEC2WebServer
+
+  EC2WebServerEIp:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref EC2WebServer
+      Tags:
+        - Key: Name
+          Value: EC2WebServerEIP
+
+  EC2SecurityGroupWebServer:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: ssh_http_sg
+      GroupDescription: allow ssh and http traffic
+      VpcId: vpc-ac8ca1c4
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
