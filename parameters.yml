@@ -1,0 +1,30 @@
+Parameters:
+  SecurityGroupDescription:
+    Description: Security Group Description
+    Type: String
+
+  InstanceType:
+    Description: 
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.small
+    constraintDescription: must be valid EC2 instance type
+
+  KeyName:
+    Description: Ec2 Instance keypair
+    Type: AWS::EC2::KeyPair::KeyName
+    constraintDescription: must be valid key
+
+  MyVPC:
+    Description: VPC subnet
+    Type: AWS::EC2::VPC::Id
+  
+  MySubnetID:
+    Description: Subnet
+    Type: "List<AWS::EC2::Subnet::Id>"
+
+# Enter your code for EC2 instance
+
+
