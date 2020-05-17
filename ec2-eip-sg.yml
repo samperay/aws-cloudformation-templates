@@ -45,3 +45,17 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+
+Outputs:
+  WebServerEC2:
+    Description: WebServerInstance
+    Value: !GetAtt EC2WebServer.PublicDnsName
+
+  WebserverEIP:
+    Description: EIP
+    Value: !Ref EC2WebServerEIp
+
+  WebServerSG:
+    Description: Webserver SG group
+    Value: !Ref EC2SecurityGroupWebServer
+
