@@ -1,4 +1,3 @@
-AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
   EnvName:
     Description: Environment Name
@@ -30,18 +29,18 @@ Resources:
   myEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      KeyName: !Ref KeyNameParameter
-      DisableApiTermination: false
-      ImageId: !FindInMap  [ EnvToInstanceTypeMap, !Ref 'EnvName', instanceType ] 
-      InstanceType:  !FindInMap [ AWSRegion, !Ref 'AWS::Region', imageid  ]
-      Monitoring: false
-      SecurityGroupIds: !Ref SecurityGroupNameParameter
-      UserData: !Base64 |
-        #!/bin/bash -ex
-        yum install httpd -y
-        service httpd start 
-        chkconfig httpd on
-        echo "Hello world" > /var/www/html/index.html
-      Tags:
-        - Key: Name
-          Value: WebServer-Mappings
+     KeyName: !Ref KeyNameParameter
+     DisableApiTermination: false
+     ImageId: !FindInMap  [ EnvToInstanceTypeMap, !Ref EnvName, instanceType ] 
+     InstanceType:  !FindInMap [ AWSRegion, !Ref "AWS::Region", imageid  ]
+     Monitoring: false
+     SecurityGroupIds: !Ref SecurityGroupNameParameter
+     UserData: !Base64 |
+       #!/bin/bash -ex
+       yum install httpd -y
+       service httpd start 
+       chkconfig httpd on
+       echo "Hello world" > /var/www/html/index.html
+     Tags:
+       - Key: Name
+         Value: WebServer-Mappings
