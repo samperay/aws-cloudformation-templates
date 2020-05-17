@@ -1,47 +1,45 @@
-Parameters:
-  SecurityGroupDescription:
-    Description: Security Group Description
-    Type: String
-
-  InstanceType:
-    Description: 
+Parameters: 
+  InstanceTypeParameter: 
     Type: String
     Default: t2.micro
-    AllowedValues:
-      - t2.nano
-      - t2.small
-    constraintDescription: must be valid EC2 instance type
+    AllowedValues: 
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+    ConstraintDescription: must be a valid EC2 instance type.
 
-  KeyName:
+  ImageIDParameter:
+    Description: AMI Image ID
+    Type: AWS::EC2::Image::Id
+    Default: ami-0470e33cd681b2476
+
+  KeyNameParameter:
     Description: Ec2 Instance keypair
     Type: AWS::EC2::KeyPair::KeyName
-    constraintDescription: must be valid key
 
-  MyVPC:
-    Description: VPC subnet
-    Type: AWS::EC2::VPC::Id
-  
-  MySubnetID:
-    Description: Subnet
-    Type: "List<AWS::EC2::Subnet::Id>"
+  SecurityGroupNameParameter:
+    Description: Security Group Name
+    Type: List<AWS::EC2::SecurityGroup::GroupName>
+    Default: http
 
 # Enter your code for EC2 instance
-
+Resources:
   myEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      KeyName: 
-      DisableApiTermination: 
-      ImageId: 
-      InstanceType: 
-      Monitoring: true|false
-      SecurityGroupIds:
-        - sg-id
+      KeyName: !Ref KeyNameParameter
+      DisableApiTermination: true
+      ImageId: !Ref ImageIDParameter
+      InstanceType: !Ref InstanceTypeParameter
+      Monitoring: false
+      SecurityGroupIds: !Ref SecurityGroupNameParameter
       UserData: !Base64 |
         #!/bin/bash -ex
-        # put your script here
+        yum install httpd -y
+        service httpd start 
+        chkconfig httpd on
+        echo "Hello world" > /var/www/html/index.html
       Tags:
-        - Key: key
-          Value: value
-
-
+        - Key: Name
+          Value: WebServer
