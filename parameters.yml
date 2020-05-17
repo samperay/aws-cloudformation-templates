@@ -29,7 +29,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       KeyName: !Ref KeyNameParameter
-      DisableApiTermination: true
+      DisableApiTermination: false
       ImageId: !Ref ImageIDParameter
       InstanceType: !Ref InstanceTypeParameter
       Monitoring: false
