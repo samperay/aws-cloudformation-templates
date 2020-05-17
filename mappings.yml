@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  EnvName:
+    Description: Environment Name
+    Type: String
+    AllowedValues: [ dev, prod ]
+    ConstraintDescription: Choose only dev or prod environment
+
+  KeyNameParameter:
+    Description: Ec2 Instance keypair
+    Type: AWS::EC2::KeyPair::KeyName
+
+  SecurityGroupNameParameter:
+    Description: Security Group Name
+    Type: List<AWS::EC2::SecurityGroup::GroupName>
+
+Mappings:
+  AWSRegion:
+    ap-south-1: 
+      imageid: ami-0470e33cd681b2476
+
+  EnvToInstanceTypeMap:
+    dev:
+      instanceType: t2.micro
+    prod:
+      # Create bigger instance if required
+      instanceType: t2.micro
+
+Resources:
+  myEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyNameParameter
+      DisableApiTermination: false
+      ImageId: !FindInMap  [ EnvToInstanceTypeMap, !Ref 'EnvName', instanceType ] 
+      InstanceType:  !FindInMap [ AWSRegion, !Ref 'AWS::Region', imageid  ]
+      Monitoring: false
+      SecurityGroupIds: !Ref SecurityGroupNameParameter
+      UserData: !Base64 |
+        #!/bin/bash -ex
+        yum install httpd -y
+        service httpd start 
+        chkconfig httpd on
+        echo "Hello world" > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: WebServer-Mappings
