@@ -31,8 +31,8 @@ Resources:
     Properties:
      KeyName: !Ref KeyNameParameter
      DisableApiTermination: false
-     ImageId: !FindInMap  [ EnvToInstanceTypeMap, !Ref EnvName, instanceType ] 
-     InstanceType:  !FindInMap [ AWSRegion, !Ref "AWS::Region", imageid  ]
+     ImageId: !FindInMap [ AWSRegion, !Ref "AWS::Region", imageid  ] 
+     InstanceType: !FindInMap [ EnvToInstanceTypeMap, !Ref EnvName, instanceType ] 
      Monitoring: false
      SecurityGroupIds: !Ref SecurityGroupNameParameter
      UserData: !Base64 |
